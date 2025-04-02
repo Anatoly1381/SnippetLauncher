@@ -1,0 +1,574 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXContainerItemProxy section */
+		EEF96AA72D94062D00D08186 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = EEF96A8D2D94062C00D08186 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = EEF96A942D94062C00D08186;
+			remoteInfo = PattayaRentMap;
+		};
+		EEF96AB12D94062D00D08186 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = EEF96A8D2D94062C00D08186 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = EEF96A942D94062C00D08186;
+			remoteInfo = PattayaRentMap;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		EE83AC582D9647D7005F7029 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 7;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		EEF96A952D94062C00D08186 /* PattayaRentMap.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PattayaRentMap.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		EEF96AA62D94062D00D08186 /* PattayaRentMapTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PattayaRentMapTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		EEF96AB02D94062D00D08186 /* PattayaRentMapUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PattayaRentMapUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		EE83AC5A2D9647FE005F7029 /* Exceptions for "PattayaRentMap" folder in "PattayaRentMap" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				"Preview Content/Preview Assets.xcassets",
+			);
+			target = EEF96A942D94062C00D08186 /* PattayaRentMap */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
+/* Begin PBXFileSystemSynchronizedRootGroup section */
+		EEF96A972D94062C00D08186 /* PattayaRentMap */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				EE83AC5A2D9647FE005F7029 /* Exceptions for "PattayaRentMap" folder in "PattayaRentMap" target */,
+			);
+			path = PattayaRentMap;
+			sourceTree = "<group>";
+		};
+/* End PBXFileSystemSynchronizedRootGroup section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		EEF96A922D94062C00D08186 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		EEF96AA32D94062D00D08186 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		EEF96AAD2D94062D00D08186 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		EEF96A8C2D94062C00D08186 = {
+			isa = PBXGroup;
+			children = (
+				EEF96A972D94062C00D08186 /* PattayaRentMap */,
+				EEF96A962D94062C00D08186 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		EEF96A962D94062C00D08186 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				EEF96A952D94062C00D08186 /* PattayaRentMap.app */,
+				EEF96AA62D94062D00D08186 /* PattayaRentMapTests.xctest */,
+				EEF96AB02D94062D00D08186 /* PattayaRentMapUITests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		EEF96A942D94062C00D08186 /* PattayaRentMap */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = EEF96ABA2D94062D00D08186 /* Build configuration list for PBXNativeTarget "PattayaRentMap" */;
+			buildPhases = (
+				EEF96A912D94062C00D08186 /* Sources */,
+				EEF96A922D94062C00D08186 /* Frameworks */,
+				EE83AC582D9647D7005F7029 /* CopyFiles */,
+				EE83AC592D9647FD005F7029 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				EEF96A972D94062C00D08186 /* PattayaRentMap */,
+			);
+			name = PattayaRentMap;
+			packageProductDependencies = (
+				EECDEF012D96D5E300694623 /* ElegantCalendar */,
+				EECDEF042D96DD8F00694623 /* ElegantCalendar */,
+				EECDEF542D96E79400694623 /* ElegantCalendar */,
+			);
+			productName = PattayaRentMap;
+			productReference = EEF96A952D94062C00D08186 /* PattayaRentMap.app */;
+			productType = "com.apple.product-type.application";
+		};
+		EEF96AA52D94062D00D08186 /* PattayaRentMapTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = EEF96ABD2D94062D00D08186 /* Build configuration list for PBXNativeTarget "PattayaRentMapTests" */;
+			buildPhases = (
+				EEF96AA22D94062D00D08186 /* Sources */,
+				EEF96AA32D94062D00D08186 /* Frameworks */,
+				EEF96AA42D94062D00D08186 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				EEF96AA82D94062D00D08186 /* PBXTargetDependency */,
+			);
+			name = PattayaRentMapTests;
+			packageProductDependencies = (
+			);
+			productName = PattayaRentMapTests;
+			productReference = EEF96AA62D94062D00D08186 /* PattayaRentMapTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		EEF96AAF2D94062D00D08186 /* PattayaRentMapUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = EEF96AC02D94062D00D08186 /* Build configuration list for PBXNativeTarget "PattayaRentMapUITests" */;
+			buildPhases = (
+				EEF96AAC2D94062D00D08186 /* Sources */,
+				EEF96AAD2D94062D00D08186 /* Frameworks */,
+				EEF96AAE2D94062D00D08186 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				EEF96AB22D94062D00D08186 /* PBXTargetDependency */,
+			);
+			name = PattayaRentMapUITests;
+			packageProductDependencies = (
+			);
+			productName = PattayaRentMapUITests;
+			productReference = EEF96AB02D94062D00D08186 /* PattayaRentMapUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		EEF96A8D2D94062C00D08186 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1620;
+				LastUpgradeCheck = 1620;
+				TargetAttributes = {
+					EEF96A942D94062C00D08186 = {
+						CreatedOnToolsVersion = 16.2;
+					};
+					EEF96AA52D94062D00D08186 = {
+						CreatedOnToolsVersion = 16.2;
+						TestTargetID = EEF96A942D94062C00D08186;
+					};
+					EEF96AAF2D94062D00D08186 = {
+						CreatedOnToolsVersion = 16.2;
+						TestTargetID = EEF96A942D94062C00D08186;
+					};
+				};
+			};
+			buildConfigurationList = EEF96A902D94062C00D08186 /* Build configuration list for PBXProject "PattayaRentMap" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = EEF96A8C2D94062C00D08186;
+			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+			);
+			preferredProjectObjectVersion = 77;
+			productRefGroup = EEF96A962D94062C00D08186 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				EEF96A942D94062C00D08186 /* PattayaRentMap */,
+				EEF96AA52D94062D00D08186 /* PattayaRentMapTests */,
+				EEF96AAF2D94062D00D08186 /* PattayaRentMapUITests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		EE83AC592D9647FD005F7029 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		EEF96AA42D94062D00D08186 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		EEF96AAE2D94062D00D08186 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		EEF96A912D94062C00D08186 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		EEF96AA22D94062D00D08186 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		EEF96AAC2D94062D00D08186 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		EEF96AA82D94062D00D08186 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = EEF96A942D94062C00D08186 /* PattayaRentMap */;
+			targetProxy = EEF96AA72D94062D00D08186 /* PBXContainerItemProxy */;
+		};
+		EEF96AB22D94062D00D08186 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = EEF96A942D94062C00D08186 /* PattayaRentMap */;
+			targetProxy = EEF96AB12D94062D00D08186 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		EEF96AB82D94062D00D08186 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MACOSX_DEPLOYMENT_TARGET = 15.2;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		EEF96AB92D94062D00D08186 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MACOSX_DEPLOYMENT_TARGET = 15.2;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = macosx;
+				SWIFT_COMPILATION_MODE = wholemodule;
+			};
+			name = Release;
+		};
+		EEF96ABB2D94062D00D08186 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = PattayaRentMap/PattayaRentMap.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"PattayaRentMap/Preview Content\"";
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = Den.PattayaRentMap;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		EEF96ABC2D94062D00D08186 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = PattayaRentMap/PattayaRentMap.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"PattayaRentMap/Preview Content\"";
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = Den.PattayaRentMap;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+		EEF96ABE2D94062D00D08186 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 15.2;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = Den.PattayaRentMapTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/PattayaRentMap.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/PattayaRentMap";
+			};
+			name = Debug;
+		};
+		EEF96ABF2D94062D00D08186 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 15.2;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = Den.PattayaRentMapTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/PattayaRentMap.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/PattayaRentMap";
+			};
+			name = Release;
+		};
+		EEF96AC12D94062D00D08186 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = Den.PattayaRentMapUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TEST_TARGET_NAME = PattayaRentMap;
+			};
+			name = Debug;
+		};
+		EEF96AC22D94062D00D08186 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = Den.PattayaRentMapUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TEST_TARGET_NAME = PattayaRentMap;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		EEF96A902D94062C00D08186 /* Build configuration list for PBXProject "PattayaRentMap" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				EEF96AB82D94062D00D08186 /* Debug */,
+				EEF96AB92D94062D00D08186 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		EEF96ABA2D94062D00D08186 /* Build configuration list for PBXNativeTarget "PattayaRentMap" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				EEF96ABB2D94062D00D08186 /* Debug */,
+				EEF96ABC2D94062D00D08186 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		EEF96ABD2D94062D00D08186 /* Build configuration list for PBXNativeTarget "PattayaRentMapTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				EEF96ABE2D94062D00D08186 /* Debug */,
+				EEF96ABF2D94062D00D08186 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		EEF96AC02D94062D00D08186 /* Build configuration list for PBXNativeTarget "PattayaRentMapUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				EEF96AC12D94062D00D08186 /* Debug */,
+				EEF96AC22D94062D00D08186 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		EECDEF012D96D5E300694623 /* ElegantCalendar */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = ElegantCalendar;
+		};
+		EECDEF042D96DD8F00694623 /* ElegantCalendar */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = ElegantCalendar;
+		};
+		EECDEF542D96E79400694623 /* ElegantCalendar */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = ElegantCalendar;
+		};
+/* End XCSwiftPackageProductDependency section */
+	};
+	rootObject = EEF96A8D2D94062C00D08186 /* Project object */;
+}

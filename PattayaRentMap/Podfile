@@ -1,0 +1,21 @@
+# Uncomment the next line to define a global platform for your project
+# platform :ios, '9.0'
+
+platform :macos, '10.15'
+
+target 'PattayaRentMap' do
+  use_frameworks!
+  
+  # Pods for PattayaRentMap
+  pod 'JTAppleCalendar'
+  
+end
+
+target 'PattayaRentMapTests' do
+  inherit! :search_paths
+  # Pods for testing
+end
+
+target 'PattayaRentMapUITests' do
+  # Pods for testing
+end
