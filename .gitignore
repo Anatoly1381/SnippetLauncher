@@ -4,3 +4,5 @@ xcuserdata/
 Pods/
 DerivedData/
 *.xcworkspace
+**/xcuserdata/**
+**/*.xcworkspace/**
