@@ -213,7 +213,7 @@ struct MonthView: View {
     private var monthName: String {
         let dateFormatter = DateFormatter()
         dateFormatter.locale = Locale(identifier: "ru_RU")
-        dateFormatter.dateFormat = "MMMM"
+        dateFormatter.dateFormat = "LLLL"
         guard let date = dateForMonth() else { return "" }
         return dateFormatter.string(from: date)
     }
