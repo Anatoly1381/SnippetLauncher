@@ -1,9 +1,4 @@
-//
-//  Apartment.swift
-//  PattayaRentMap
-//
-//  Created by Anatoly Fedorov on 26/3/2568 BE.
-//
+import SwiftUI
 import Foundation
 import CoreLocation
 
@@ -44,9 +39,10 @@ class Apartment: Identifiable, ObservableObject {
             updateStatus()
         }
     }
+    @Published var photos: [NSImage] // Для macOS используем NSImage
 
     init(id: String, title: String, description: String, coordinate: CLLocationCoordinate2D,
-         address: String, area: Int, floor: Int, status: ApartmentStatus) {
+         address: String, area: Int, floor: Int, status: ApartmentStatus = .available, photos: [NSImage] = []) {
         self.id = id
         self.title = title
         self.description = description
@@ -55,6 +51,7 @@ class Apartment: Identifiable, ObservableObject {
         self.area = area
         self.floor = floor
         self.status = status
+        self.photos = photos // Инициализация массива с фотографиями
     }
 
     func addBooking(from startDate: Date, to endDate: Date, type: BookingType) {

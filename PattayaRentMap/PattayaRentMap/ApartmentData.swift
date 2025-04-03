@@ -1,5 +1,6 @@
 import Foundation
 import CoreLocation
+import PhotosUI
 
 let mockApartments: [Apartment] = [
     Apartment(

@@ -1,4 +1,5 @@
 import SwiftUI
+import AppKit
 
 struct ApartmentDetailView: View {
     @ObservedObject var apartment: Apartment
@@ -9,16 +10,21 @@ struct ApartmentDetailView: View {
     @State private var isDescriptionExpanded = false
     @State private var showDeleteAllConfirmation = false
     @State private var showYearCalendar = false
-    
+    @State private var showImagePicker = false
+    @State private var photoToDelete: Int?
+
     private let calendar: Calendar = {
         var calendar = Calendar(identifier: .gregorian)
         calendar.locale = Locale(identifier: "ru_RU")
         return calendar
     }()
-    
+
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 16) {
+                // Секция фотографий
+                photosSection
+                
                 // Информация о квартире
                 Text(apartment.title)
                     .font(.title2.bold())
@@ -38,6 +44,7 @@ struct ApartmentDetailView: View {
                         }
                         .font(.caption)
                     }
+                    
                     Button(action: { showYearCalendar.toggle() }) {
                         Label("Календарь на год", systemImage: "calendar")
                             .frame(maxWidth: .infinity)
@@ -77,6 +84,13 @@ struct ApartmentDetailView: View {
                 )
             }
         }
+        .fileImporter(
+            isPresented: $showImagePicker,
+            allowedContentTypes: [.image],
+            allowsMultipleSelection: true
+        ) { result in
+            handleImageSelection(result: result)
+        }
         .alert("Конфликт дат", isPresented: $showOverlapAlert) {
             Button("OK", role: .cancel) {}
         } message: {
@@ -90,8 +104,92 @@ struct ApartmentDetailView: View {
         } message: {
             Text("Все бронирования для этой квартиры будут удалены. Это действие нельзя отменить.")
         }
+        .alert("Удалить фотографию?", isPresented: Binding<Bool>(
+            get: { photoToDelete != nil },
+            set: { if !$0 { photoToDelete = nil } }
+        )) {
+            Button("Удалить", role: .destructive) {
+                if let index = photoToDelete {
+                    apartment.photos.remove(at: index)
+                }
+            }
+            Button("Отмена", role: .cancel) {}
+        } message: {
+            Text("Фотография будет удалена без возможности восстановления.")
+        }
+    }
+
+    // MARK: - Фотографии
+    private var photosSection: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            HStack {
+                Text("Фотографии")
+                    .font(.headline)
+                
+                Spacer()
+                
+                Button(action: {
+                    showImagePicker = true
+                }) {
+                    Image(systemName: "plus")
+                        .padding(8)
+                        .background(Color.blue)
+                        .foregroundColor(.white)
+                        .clipShape(Circle())
+                }
+                .buttonStyle(.plain)
+            }
+            
+            if apartment.photos.isEmpty {
+                Text("Нет фотографий")
+                    .foregroundColor(.secondary)
+                    .frame(maxWidth: .infinity, minHeight: 100)
+                    .background(Color(.systemGray))
+                    .cornerRadius(8)
+            } else {
+                ScrollView(.horizontal, showsIndicators: false) {
+                    HStack(spacing: 10) {
+                        ForEach(Array(apartment.photos.enumerated()), id: \.offset) { index, photo in
+                            ZStack(alignment: .topTrailing) {
+                                Image(nsImage: photo)
+                                    .resizable()
+                                    .scaledToFit()
+                                    .frame(width: 150, height: 150)
+                                    .cornerRadius(8)
+                                
+                                Button(action: {
+                                    photoToDelete = index
+                                }) {
+                                    Image(systemName: "xmark.circle.fill")
+                                        .foregroundColor(.red)
+                                        .background(Color.white)
+                                        .clipShape(Circle())
+                                        .padding(4)
+                                }
+                                .buttonStyle(.plain)
+                            }
+                        }
+                    }
+                    .padding(.vertical, 8)
+                }
+            }
+        }
     }
     
+    private func handleImageSelection(result: Result<[URL], Error>) {
+        do {
+            let urls = try result.get()
+            for url in urls {
+                if let image = NSImage(contentsOf: url) {
+                    apartment.photos.append(image)
+                }
+            }
+        } catch {
+            print("Ошибка при загрузке изображений: \(error.localizedDescription)")
+        }
+    }
+
+    // MARK: - Бронирование
     private var bookingSection: some View {
         VStack(alignment: .leading, spacing: 16) {
             Text("Выберите даты бронирования")
@@ -193,14 +291,31 @@ struct DateRangePickerView: View {
     @Binding var endDate: Date?
     let bookedRanges: [BookingRange]
     let calendar: Calendar
-    
     @State private var currentMonth: Date = Date()
     
     var body: some View {
         VStack {
-            monthNavigation
-                .padding(.bottom, 8)
+            // Навигация по месяцам
+            HStack {
+                Button(action: previousMonth) {
+                    Image(systemName: "chevron.left")
+                        .padding(8)
+                        .contentShape(Rectangle())
+                }
+                
+                Text(currentMonthTitle)
+                    .font(.headline)
+                    .frame(maxWidth: .infinity)
+                
+                Button(action: nextMonth) {
+                    Image(systemName: "chevron.right")
+                        .padding(8)
+                        .contentShape(Rectangle())
+                }
+            }
+            .buttonStyle(.plain)
             
+            // Дни недели
             LazyVGrid(columns: Array(repeating: GridItem(), count: 7)) {
                 ForEach(weekdaySymbols, id: \.self) { day in
                     Text(day)
@@ -208,6 +323,7 @@ struct DateRangePickerView: View {
                         .foregroundColor(.secondary)
                 }
                 
+                // Дни месяца
                 ForEach(daysInMonth, id: \.self) { date in
                     DayView(
                         date: date,
@@ -220,37 +336,6 @@ struct DateRangePickerView: View {
                 }
             }
         }
-        .onAppear {
-            currentMonth = calendar.startOfDay(for: currentMonth)
-        }
-    }
-    
-    private var monthNavigation: some View {
-        HStack {
-            Button(action: previousMonth) {
-                Image(systemName: "chevron.left")
-                    .padding(8)
-                    .contentShape(Rectangle())
-            }
-            
-            Text(currentMonthTitle)
-                .font(.headline)
-                .frame(maxWidth: .infinity)
-            
-            Button(action: nextMonth) {
-                Image(systemName: "chevron.right")
-                    .padding(8)
-                    .contentShape(Rectangle())
-            }
-        }
-        .buttonStyle(.plain)
-    }
-    
-    private var weekdaySymbols: [String] {
-        let formatter = DateFormatter()
-        formatter.locale = Locale(identifier: "ru_RU")
-        formatter.calendar = calendar
-        return formatter.shortStandaloneWeekdaySymbols.map { $0.capitalized }
     }
     
     private var currentMonthTitle: String {
@@ -261,41 +346,52 @@ struct DateRangePickerView: View {
         return formatter.string(from: currentMonth).capitalized
     }
     
+    private var weekdaySymbols: [String] {
+        let formatter = DateFormatter()
+        formatter.locale = Locale(identifier: "ru_RU")
+        formatter.calendar = calendar
+        return formatter.shortStandaloneWeekdaySymbols.map { $0.capitalized }
+    }
+    
     private var daysInMonth: [Date] {
-        guard let range = calendar.dateInterval(of: .month, for: currentMonth) else {
+        guard
+            let monthInterval = calendar.dateInterval(of: .month, for: currentMonth),
+            let monthFirstDay = calendar.dateInterval(of: .month, for: currentMonth)?.start
+        else {
             return []
         }
         
+        // Вычисляем сколько дней из предыдущего месяца нужно показать
+        let weekdayOfFirstDay = calendar.component(.weekday, from: monthFirstDay)
+        let daysToAdd = (weekdayOfFirstDay - calendar.firstWeekday + 7) % 7
+        
         var dates: [Date] = []
-        var current = range.start
+        var currentDate = monthInterval.start
         
         // Добавляем дни из предыдущего месяца
-        let firstWeekday = calendar.component(.weekday, from: current)
-        let daysToAdd = (firstWeekday - calendar.firstWeekday + 7) % 7
-        
         if daysToAdd > 0 {
-            let prevMonth = calendar.date(byAdding: .month, value: -1, to: current)!
-            let prevMonthDays = calendar.range(of: .day, in: .month, for: prevMonth)!.count
-            let startDay = prevMonthDays - daysToAdd + 1
+            let previousMonth = calendar.date(byAdding: .month, value: -1, to: currentDate)!
+            let daysInPreviousMonth = calendar.range(of: .day, in: .month, for: previousMonth)!.count
+            let startDay = daysInPreviousMonth - daysToAdd + 1
             
-            for day in startDay...prevMonthDays {
-                if let date = calendar.date(bySetting: .day, value: day, of: prevMonth) {
+            for day in startDay...daysInPreviousMonth {
+                if let date = calendar.date(bySetting: .day, value: day, of: previousMonth) {
                     dates.append(date)
                 }
             }
         }
         
         // Добавляем дни текущего месяца
-        while current < range.end {
-            dates.append(current)
-            current = calendar.date(byAdding: .day, value: 1, to: current)!
+        while currentDate < monthInterval.end {
+            dates.append(currentDate)
+            currentDate = calendar.date(byAdding: .day, value: 1, to: currentDate)!
         }
         
-        // Добавляем дни следующего месяца для заполнения сетки
-        let remaining = 42 - dates.count // 6 недель * 7 дней
-        if remaining > 0 {
-            let nextMonth = calendar.date(byAdding: .month, value: 1, to: current)!
-            for day in 1...remaining {
+        // Добавляем дни из следующего месяца для заполнения сетки
+        let remainingDays = 42 - dates.count // 6 недель
+        if remainingDays > 0 {
+            let nextMonth = calendar.date(byAdding: .month, value: 1, to: currentDate)!
+            for day in 1...remainingDays {
                 if let date = calendar.date(bySetting: .day, value: day, of: nextMonth) {
                     dates.append(date)
                 }
