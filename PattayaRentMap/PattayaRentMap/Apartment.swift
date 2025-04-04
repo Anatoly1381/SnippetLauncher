@@ -2,7 +2,6 @@ import SwiftUI
 import Foundation
 import CoreLocation
 
-
 enum BookingType: String, CaseIterable, Identifiable, Codable {
     var id: String { self.rawValue }
     case reserved = "Забронировано"
@@ -34,14 +33,10 @@ class Apartment: Identifiable, ObservableObject {
     let area: Int
     let floor: Int
     @Published var status: ApartmentStatus
-    @Published var bookingRanges: [BookingRange] = [] {
-        didSet {
-            save()
-            updateStatus()
-        }
-    }
-    @Published var photos: [NSImage] = []  // Новый массив для хранения фотографий
+    @Published var bookingRanges: [BookingRange] = []
+    @Published var photos: [NSImage] = []  // Массив для хранения фотографий
 
+    // Инициализация объекта квартиры
     init(id: String, title: String, description: String, coordinate: CLLocationCoordinate2D,
          address: String, area: Int, floor: Int, status: ApartmentStatus) {
         self.id = id
@@ -54,57 +49,75 @@ class Apartment: Identifiable, ObservableObject {
         self.status = status
     }
 
-    // Добавление бронирования
-    func addBooking(from startDate: Date, to endDate: Date, type: BookingType) {
-        let newBooking = BookingRange(startDate: startDate, endDate: endDate, type: type)
-        bookingRanges.append(newBooking)
-    }
-
-    // Удаление бронирования
-    func removeBooking(_ booking: BookingRange) {
-        bookingRanges.removeAll { $0.id == booking.id }
-    }
-
-    // Удаление всех бронирований
-    func removeAllBookings() {
-        bookingRanges.removeAll()
-    }
-
-    private func updateStatus() {
-        status = bookingRanges.contains { $0.type == .reserved } ? .rented : .available
-    }
-
-    // Сохранение бронирований
-    private func save() {
-        if let encoded = try? JSONEncoder().encode(bookingRanges) {
-            UserDefaults.standard.set(encoded, forKey: "\(id)_bookings")
-        }
+    // Добавление фотографий
+    func addPhotos(_ newPhotos: [NSImage]) {
+        self.photos.append(contentsOf: newPhotos)  // Добавляем новые фотографии в массив
         savePhotos()  // Сохраняем фотографии
     }
 
-    // Сохранение фотографий
+    // Удаление фотографии по индексу
+    func deletePhoto(at index: Int) {
+        photos.remove(at: index)
+        savePhotos()  // Сохраняем обновленный массив фотографий
+    }
+
+    // Сохранение фотографий в UserDefaults
     private func savePhotos() {
         let photosData = photos.compactMap { $0.tiffRepresentation }
         UserDefaults.standard.set(photosData, forKey: "\(id)_photos")
     }
 
-    // Загрузка фотографий
+    // Загрузка фотографий из UserDefaults
     private func loadPhotos() {
         if let savedData = UserDefaults.standard.array(forKey: "\(id)_photos") as? [Data] {
             photos = savedData.compactMap { NSImage(data: $0) }
         }
     }
 
+    // Обновление статуса квартиры в зависимости от текущих бронирований
+    private func updateStatus() {
+        status = bookingRanges.contains { $0.type == .reserved } ? .rented : .available
+    }
+
+    // Сохранение информации о бронированиях
+    private func save() {
+        if let encoded = try? JSONEncoder().encode(bookingRanges) {
+            UserDefaults.standard.set(encoded, forKey: "\(id)_bookings")
+        }
+    }
+
+    // Статический метод для загрузки всех квартир
     static func loadAll() -> [Apartment] {
-        let apartments = mockApartments
+        let apartments = mockApartments  // Заглушка для списка квартир
         apartments.forEach { apt in
+            // Загружаем сохраненные бронирования
             if let data = UserDefaults.standard.data(forKey: "\(apt.id)_bookings"),
                let ranges = try? JSONDecoder().decode([BookingRange].self, from: data) {
                 apt.bookingRanges = ranges
                 apt.updateStatus()
             }
-            apt.loadPhotos()  // Загружаем фотографии
+            // Загружаем фотографии
+            apt.loadPhotos()
         }
         return apartments
+    }
+
+    // Метод для добавления нового бронирования
+    func addBooking(from startDate: Date, to endDate: Date, type: BookingType) {
+        let newBooking = BookingRange(startDate: startDate, endDate: endDate, type: type)
+        bookingRanges.append(newBooking)
+        save()  // Сохраняем изменения
+    }
+
+    // Удаление бронирования по объекту
+    func removeBooking(_ booking: BookingRange) {
+        bookingRanges.removeAll { $0.id == booking.id }
+        save()  // Сохраняем изменения
+    }
+
+    // Удаление всех бронирований
+    func removeAllBookings() {
+        bookingRanges.removeAll()
+        save()  // Сохраняем изменения
     }
 }

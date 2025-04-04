@@ -1,7 +1,5 @@
 import SwiftUI
-import AppKit// Для использования NSImage
-
-
+import AppKit
 
 struct ApartmentDetailView: View {
     @ObservedObject var apartment: Apartment
@@ -14,13 +12,15 @@ struct ApartmentDetailView: View {
     @State private var showYearCalendar = false
     @State private var showImagePicker = false
     @State private var photoToDelete: Int?
-    
+    @State private var isFullImageViewPresented = false
+    @State private var selectedPhoto: NSImage?
+
     private let calendar: Calendar = {
         var calendar = Calendar(identifier: .gregorian)
         calendar.locale = Locale(identifier: "ru_RU")
         return calendar
     }()
-    
+
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 16) {
@@ -63,47 +63,52 @@ struct ApartmentDetailView: View {
         } message: {
             Text("Все бронирования для этой квартиры будут удалены. Это действие нельзя отменить.")
         }
+        // Full image view sheet
+        .sheet(isPresented: $isFullImageViewPresented) {
+            if let selectedPhoto = selectedPhoto {
+                VStack {
+                    Image(nsImage: selectedPhoto)
+                        .resizable()
+                        .scaledToFit()
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    Button("Закрыть") {
+                        isFullImageViewPresented = false
+                    }
+                    .buttonStyle(.borderedProminent)
+                    .padding()
+                }
+            }
+        }
     }
 
-    // Секция для отображения фотографий
     private var photosSection: some View {
         VStack(alignment: .leading) {
-            HStack {
-                Text("Фотографии").font(.headline)
-                Spacer()
-                Button("Добавить фото") { showImagePicker = true }
+            Text("Фотографии")
+                .font(.headline)
+
+            Button("Добавить фото") {
+                showImagePicker.toggle()
             }
+            .buttonStyle(.borderedProminent)
+            .padding(.bottom, 10)
 
             if apartment.photos.isEmpty {
-                placeholderView
+                Text("Нет фотографий")
+                    .font(.subheadline)
+                    .foregroundColor(.secondary)
             } else {
-                ScrollView(.horizontal, showsIndicators: false) {
+                ScrollView(.horizontal) {
                     HStack(spacing: 10) {
                         ForEach(0..<apartment.photos.count, id: \.self) { index in
                             photoView(for: index)
                         }
                     }
+                    .frame(height: 180)
                 }
-                .frame(height: 180)
             }
         }
     }
 
-    // Placeholder для отсутствующих фотографий
-    private var placeholderView: some View {
-        ZStack {
-            RoundedRectangle(cornerRadius: 8)
-                .fill(Color.gray.opacity(0.2))
-                .frame(height: 150)
-            VStack {
-                Image(systemName: "photo.on.rectangle")
-                    .font(.largeTitle)
-                Text("Нет фотографий")
-            }
-        }
-    }
-
-    // Отображение фотографий
     private func photoView(for index: Int) -> some View {
         ZStack(alignment: .topTrailing) {
             Image(nsImage: apartment.photos[index])
@@ -111,18 +116,33 @@ struct ApartmentDetailView: View {
                 .scaledToFit()
                 .frame(height: 150)
                 .cornerRadius(8)
-            
-            Button(action: { photoToDelete = index }) {
+
+            Button(action: {
+                apartment.deletePhoto(at: index) // Удаление фото
+            }) {
                 Image(systemName: "xmark.circle.fill")
                     .foregroundColor(.red)
                     .background(Color.white)
                     .clipShape(Circle())
             }
             .buttonStyle(.plain)
+
+            Button(action: { showFullImage(photo: apartment.photos[index]) }) {
+                Image(systemName: "eye.fill")
+                    .foregroundColor(.blue)
+                    .background(Color.white)
+                    .clipShape(Circle())
+            }
+            .buttonStyle(.plain)
+            .padding([.top, .trailing], 8)
         }
     }
 
-    // Обработчик загрузки фотографий
+    private func showFullImage(photo: NSImage) {
+        selectedPhoto = photo
+        isFullImageViewPresented = true
+    }
+
     private func handleImageSelection(result: Result<[URL], Error>) {
         do {
             let urls = try result.get()
@@ -132,7 +152,7 @@ struct ApartmentDetailView: View {
                 }
                 return NSImage(contentsOf: url)
             }
-            apartment.photos.append(contentsOf: images) // Добавляем выбранные фотографии
+            apartment.addPhotos(images) // Добавляем выбранные фотографии
         } catch {
             print("Ошибка загрузки: \(error.localizedDescription)")
         }
@@ -148,8 +168,6 @@ struct ApartmentDetailView: View {
                 .foregroundColor(.secondary)
         }
     }
-
-    // Секция с описанием квартиры
     private var descriptionSection: some View {
         Group {
             Text(isDescriptionExpanded ? apartment.description : String(apartment.description.prefix(100)) + "...")
@@ -161,16 +179,14 @@ struct ApartmentDetailView: View {
                 }
                 .font(.caption)
             }
-            
             Button(action: { showYearCalendar.toggle() }) {
-                Label("Календарь на год", systemImage: "calendar")
-                    .frame(maxWidth: .infinity)
-            }
-            .buttonStyle(.borderedProminent)
-            .padding(.vertical, 8)
+                            Label("Календарь на год", systemImage: "calendar")
+                                .frame(maxWidth: .infinity)
+                        }
+                        .buttonStyle(.borderedProminent)
+                        .padding(.vertical, 8)
         }
     }
-
     // Секция с характеристиками квартиры
     private var apartmentSpecsSection: some View {
         HStack {
@@ -189,7 +205,7 @@ struct ApartmentDetailView: View {
         VStack(alignment: .leading, spacing: 16) {
             Text("Выберите даты бронирования")
                 .font(.headline)
-            
+
             DateRangePickerView(
                 startDate: $selectedStartDate,
                 endDate: $selectedEndDate,
@@ -197,14 +213,14 @@ struct ApartmentDetailView: View {
                 calendar: calendar
             )
             .frame(height: 400)
-            
+
             Picker("Тип бронирования", selection: $bookingType) {
                 ForEach(BookingType.allCases) { type in
                     Text(type.rawValue).tag(type)
                 }
             }
             .pickerStyle(.segmented)
-            
+
             Button(action: confirmBooking) {
                 Text("Подтвердить бронирование")
                     .frame(maxWidth: .infinity)
@@ -219,13 +235,13 @@ struct ApartmentDetailView: View {
         Group {
             if !apartment.bookingRanges.isEmpty {
                 Divider()
-                
+
                 HStack {
                     Text("Текущие бронирования")
                         .font(.headline)
-                    
+
                     Spacer()
-                    
+
                     Button(action: {
                         showDeleteAllConfirmation = true
                     }) {
@@ -234,7 +250,7 @@ struct ApartmentDetailView: View {
                             .foregroundColor(.red)
                     }
                 }
-                
+
                 ForEach(apartment.bookingRanges) { range in
                     HStack {
                         VStack(alignment: .leading, spacing: 4) {
@@ -242,9 +258,9 @@ struct ApartmentDetailView: View {
                             Text("Тип: \(range.type.rawValue)")
                                 .foregroundColor(range.type == .reserved ? .red : .orange)
                         }
-                        
+
                         Spacer()
-                        
+
                         Button(action: {
                             apartment.removeBooking(range)
                         }) {
@@ -259,20 +275,19 @@ struct ApartmentDetailView: View {
         }
     }
 
-    // Подтверждение бронирования
     private func confirmBooking() {
         guard let start = selectedStartDate, let end = selectedEndDate else { return }
-        
+
         let newRange = BookingRange(
             startDate: calendar.startOfDay(for: start),
             endDate: calendar.startOfDay(for: end),
             type: bookingType
         )
-        
+
         let hasConflict = apartment.bookingRanges.contains { existing in
             newRange.startDate <= existing.endDate && newRange.endDate >= existing.startDate
         }
-        
+
         if hasConflict {
             showOverlapAlert = true
         } else {
