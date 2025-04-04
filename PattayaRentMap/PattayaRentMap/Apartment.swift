@@ -2,6 +2,7 @@ import SwiftUI
 import Foundation
 import CoreLocation
 
+
 enum BookingType: String, CaseIterable, Identifiable, Codable {
     var id: String { self.rawValue }
     case reserved = "Забронировано"
@@ -39,10 +40,10 @@ class Apartment: Identifiable, ObservableObject {
             updateStatus()
         }
     }
-    @Published var photos: [NSImage] // Для macOS используем NSImage
+    @Published var photos: [NSImage] = []  // Новый массив для хранения фотографий
 
     init(id: String, title: String, description: String, coordinate: CLLocationCoordinate2D,
-         address: String, area: Int, floor: Int, status: ApartmentStatus = .available, photos: [NSImage] = []) {
+         address: String, area: Int, floor: Int, status: ApartmentStatus) {
         self.id = id
         self.title = title
         self.description = description
@@ -51,18 +52,20 @@ class Apartment: Identifiable, ObservableObject {
         self.area = area
         self.floor = floor
         self.status = status
-        self.photos = photos // Инициализация массива с фотографиями
     }
 
+    // Добавление бронирования
     func addBooking(from startDate: Date, to endDate: Date, type: BookingType) {
         let newBooking = BookingRange(startDate: startDate, endDate: endDate, type: type)
         bookingRanges.append(newBooking)
     }
 
+    // Удаление бронирования
     func removeBooking(_ booking: BookingRange) {
         bookingRanges.removeAll { $0.id == booking.id }
     }
 
+    // Удаление всех бронирований
     func removeAllBookings() {
         bookingRanges.removeAll()
     }
@@ -71,9 +74,24 @@ class Apartment: Identifiable, ObservableObject {
         status = bookingRanges.contains { $0.type == .reserved } ? .rented : .available
     }
 
+    // Сохранение бронирований
     private func save() {
         if let encoded = try? JSONEncoder().encode(bookingRanges) {
             UserDefaults.standard.set(encoded, forKey: "\(id)_bookings")
+        }
+        savePhotos()  // Сохраняем фотографии
+    }
+
+    // Сохранение фотографий
+    private func savePhotos() {
+        let photosData = photos.compactMap { $0.tiffRepresentation }
+        UserDefaults.standard.set(photosData, forKey: "\(id)_photos")
+    }
+
+    // Загрузка фотографий
+    private func loadPhotos() {
+        if let savedData = UserDefaults.standard.array(forKey: "\(id)_photos") as? [Data] {
+            photos = savedData.compactMap { NSImage(data: $0) }
         }
     }
 
@@ -85,6 +103,7 @@ class Apartment: Identifiable, ObservableObject {
                 apt.bookingRanges = ranges
                 apt.updateStatus()
             }
+            apt.loadPhotos()  // Загружаем фотографии
         }
         return apartments
     }
