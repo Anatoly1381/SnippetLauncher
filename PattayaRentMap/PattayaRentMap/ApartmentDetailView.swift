@@ -12,9 +12,11 @@ struct ApartmentDetailView: View {
     @State private var showYearCalendar = false
     @State private var showImagePicker = false
     @State private var photoToDelete: Int?
+    
+    // Для полноэкранного просмотра
     @State private var isFullImageViewPresented = false
-    @State private var selectedPhoto: NSImage?
-
+    @State private var selectedPhotoIndex: Int = 0
+    
     private let calendar: Calendar = {
         var calendar = Calendar(identifier: .gregorian)
         calendar.locale = Locale(identifier: "ru_RU")
@@ -24,14 +26,14 @@ struct ApartmentDetailView: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 16) {
-                photosSection        // Секция для фотографий
-                apartmentInfoSection // Секция с информацией о квартире
-                descriptionSection   // Секция с описанием
+                photosSection
+                apartmentInfoSection
+                descriptionSection
                 Divider()
-                apartmentSpecsSection // Секция с характеристиками квартиры
+                apartmentSpecsSection
                 Divider()
-                bookingSection        // Блок бронирования
-                existingBookingsSection // Список бронирований
+                bookingSection
+                existingBookingsSection
             }
             .padding()
         }
@@ -48,7 +50,7 @@ struct ApartmentDetailView: View {
             allowedContentTypes: [.image],
             allowsMultipleSelection: true
         ) { result in
-            handleImageSelection(result: result) // Обработчик выбора фото
+            handleImageSelection(result: result)
         }
         .alert("Конфликт дат", isPresented: $showOverlapAlert) {
             Button("OK", role: .cancel) {}
@@ -63,21 +65,12 @@ struct ApartmentDetailView: View {
         } message: {
             Text("Все бронирования для этой квартиры будут удалены. Это действие нельзя отменить.")
         }
-        // Full image view sheet
         .sheet(isPresented: $isFullImageViewPresented) {
-            if let selectedPhoto = selectedPhoto {
-                VStack {
-                    Image(nsImage: selectedPhoto)
-                        .resizable()
-                        .scaledToFit()
-                        .frame(maxWidth: .infinity, maxHeight: .infinity)
-                    Button("Закрыть") {
-                        isFullImageViewPresented = false
-                    }
-                    .buttonStyle(.borderedProminent)
-                    .padding()
-                }
-            }
+            FullScreenImageView(
+                images: apartment.photos,
+                currentIndex: $selectedPhotoIndex,
+                isPresented: $isFullImageViewPresented
+            )
         }
     }
 
@@ -116,9 +109,13 @@ struct ApartmentDetailView: View {
                 .scaledToFit()
                 .frame(height: 150)
                 .cornerRadius(8)
+                .onTapGesture {
+                    selectedPhotoIndex = index
+                    isFullImageViewPresented = true
+                }
 
             Button(action: {
-                apartment.deletePhoto(at: index) // Удаление фото
+                apartment.deletePhoto(at: index)
             }) {
                 Image(systemName: "xmark.circle.fill")
                     .foregroundColor(.red)
@@ -126,21 +123,7 @@ struct ApartmentDetailView: View {
                     .clipShape(Circle())
             }
             .buttonStyle(.plain)
-
-            Button(action: { showFullImage(photo: apartment.photos[index]) }) {
-                Image(systemName: "eye.fill")
-                    .foregroundColor(.blue)
-                    .background(Color.white)
-                    .clipShape(Circle())
-            }
-            .buttonStyle(.plain)
-            .padding([.top, .trailing], 8)
         }
-    }
-
-    private func showFullImage(photo: NSImage) {
-        selectedPhoto = photo
-        isFullImageViewPresented = true
     }
 
     private func handleImageSelection(result: Result<[URL], Error>) {
@@ -152,13 +135,12 @@ struct ApartmentDetailView: View {
                 }
                 return NSImage(contentsOf: url)
             }
-            apartment.addPhotos(images) // Добавляем выбранные фотографии
+            apartment.addPhotos(images)
         } catch {
             print("Ошибка загрузки: \(error.localizedDescription)")
         }
     }
 
-    // Секция с информацией о квартире
     private var apartmentInfoSection: some View {
         VStack(alignment: .leading) {
             Text(apartment.title)
@@ -168,6 +150,7 @@ struct ApartmentDetailView: View {
                 .foregroundColor(.secondary)
         }
     }
+
     private var descriptionSection: some View {
         Group {
             Text(isDescriptionExpanded ? apartment.description : String(apartment.description.prefix(100)) + "...")
@@ -179,15 +162,16 @@ struct ApartmentDetailView: View {
                 }
                 .font(.caption)
             }
+            
             Button(action: { showYearCalendar.toggle() }) {
-                            Label("Календарь на год", systemImage: "calendar")
-                                .frame(maxWidth: .infinity)
-                        }
-                        .buttonStyle(.borderedProminent)
-                        .padding(.vertical, 8)
+                Label("Календарь на год", systemImage: "calendar")
+                    .frame(maxWidth: .infinity)
+            }
+            .buttonStyle(.borderedProminent)
+            .padding(.vertical, 8)
         }
     }
-    // Секция с характеристиками квартиры
+
     private var apartmentSpecsSection: some View {
         HStack {
             VStack(alignment: .leading) {
@@ -200,7 +184,6 @@ struct ApartmentDetailView: View {
         }
     }
 
-    // Секция для бронирования
     private var bookingSection: some View {
         VStack(alignment: .leading, spacing: 16) {
             Text("Выберите даты бронирования")
@@ -230,7 +213,6 @@ struct ApartmentDetailView: View {
         }
     }
 
-    // Секция с текущими бронированиями
     private var existingBookingsSection: some View {
         Group {
             if !apartment.bookingRanges.isEmpty {
@@ -294,6 +276,100 @@ struct ApartmentDetailView: View {
             apartment.addBooking(from: start, to: end, type: bookingType)
             selectedStartDate = nil
             selectedEndDate = nil
+        }
+    }
+}
+import SwiftUI
+
+struct FullScreenImageView: View {
+    let images: [NSImage]
+    @Binding var currentIndex: Int
+    @Binding var isPresented: Bool
+    
+    @State private var transitionDirection: TransitionDirection = .forward
+    
+    enum TransitionDirection {
+        case forward
+        case backward
+    }
+    
+    var body: some View {
+        ZStack {
+            Color.black.ignoresSafeArea()
+            
+            // Основной контейнер для фото
+            ZStack {
+                ForEach(images.indices, id: \.self) { index in
+                    if index == currentIndex {
+                        Image(nsImage: images[index])
+                            .resizable()
+                            .scaledToFit()
+                            .transition(getTransition())
+                            .zIndex(1) // Активное фото поверх остальных
+                    } else {
+                        Image(nsImage: images[index])
+                            .resizable()
+                            .scaledToFit()
+                            .hidden() // Скрываем неактивные фото
+                            .zIndex(0)
+                    }
+                }
+            }
+            
+            // Кнопки навигации
+            HStack {
+                Button(action: goPrevious) {
+                    Image(systemName: "chevron.left")
+                        .font(.largeTitle)
+                        .foregroundColor(.white)
+                        .padding()
+                        .background(Circle().fill(Color.black.opacity(0.5)))
+                }
+                .buttonStyle(.plain)
+                .disabled(currentIndex <= 0)
+                
+                Spacer()
+                
+                Button(action: goNext) {
+                    Image(systemName: "chevron.right")
+                        .font(.largeTitle)
+                        .foregroundColor(.white)
+                        .padding()
+                        .background(Circle().fill(Color.black.opacity(0.5)))
+                }
+                .buttonStyle(.plain)
+                .disabled(currentIndex >= images.count - 1)
+            }
+            .padding()
+        }
+    }
+    
+    private func goPrevious() {
+        withAnimation(.easeInOut(duration: 0.5)) {
+            transitionDirection = .backward
+            currentIndex = max(0, currentIndex - 1)
+        }
+    }
+    
+    private func goNext() {
+        withAnimation(.easeInOut(duration: 0.5)) {
+            transitionDirection = .forward
+            currentIndex = min(images.count - 1, currentIndex + 1)
+        }
+    }
+    
+    private func getTransition() -> AnyTransition {
+        switch transitionDirection {
+        case .forward:
+            return .asymmetric(
+                insertion: .move(edge: .trailing),
+                removal: .move(edge: .leading)
+            )
+        case .backward:
+            return .asymmetric(
+                insertion: .move(edge: .leading),
+                removal: .move(edge: .trailing)
+            )
         }
     }
 }
