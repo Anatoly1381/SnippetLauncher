@@ -111,56 +111,49 @@ struct MonthView: View {
     let bookedRanges: [BookingRange]
     let calendar: Calendar
 
+    // MARK: - Display Dates (42 ячейки, как в Apple Calendar)
     private var displayDates: [Date] {
-        guard let firstOfMonth = calendar.date(from: DateComponents(year: year, month: month, day: 1)) else { return [] }
+        let firstOfMonth = calendar.date(from: DateComponents(year: year, month: month, day: 1))!
 
+        // Первый день недели (0 = Sunday, 1 = Monday, ...)
         let weekdayOffset = (calendar.component(.weekday, from: firstOfMonth) - calendar.firstWeekday + 7) % 7
 
+        // MARK: - Previous month
         let previousMonth = calendar.date(byAdding: .month, value: -1, to: firstOfMonth)!
         let previousMonthDays = calendar.range(of: .day, in: .month, for: previousMonth)!.count
-
-        // Leading (previous month)
-     let startDay = previousMonthDays - weekdayOffset + 1
-
-        let leadingDates: [Date]
-        if startDay > 0, startDay <= previousMonthDays {
-            leadingDates = (startDay...previousMonthDays).compactMap { day in
+        let startDay = max(previousMonthDays - weekdayOffset + 1, 1)
+        let leadingDates: [Date] = startDay <= previousMonthDays
+            ? (startDay...previousMonthDays).compactMap { day in
                 calendar.date(from: DateComponents(
                     year: calendar.component(.year, from: previousMonth),
                     month: calendar.component(.month, from: previousMonth),
                     day: day
                 ))
             }
-        } else {
-            leadingDates = []
-        }
+            : []
 
-        // Current month
-        let currentRange = calendar.range(of: .day, in: .month, for: firstOfMonth)!
-        let currentDates: [Date] = currentRange.compactMap { day in
+        // MARK: - Current month
+        let currentMonthRange = calendar.range(of: .day, in: .month, for: firstOfMonth)!
+        let currentDates = currentMonthRange.compactMap { day in
             calendar.date(from: DateComponents(year: year, month: month, day: day))
         }
 
-        // Trailing (next month)
-        let lastOfMonth = calendar.date(byAdding: .day, value: currentRange.count - 1, to: firstOfMonth)!
-        let endOffset = (7 - (calendar.component(.weekday, from: lastOfMonth) - calendar.firstWeekday + 1) % 7) % 7
-
+        // MARK: - Next month
         let nextMonth = calendar.date(byAdding: .month, value: 1, to: firstOfMonth)!
-        let trailingDates: [Date]
-        if endOffset > 0 {
-            trailingDates = (1...endOffset).compactMap { day in
-                calendar.date(from: DateComponents(
-                    year: calendar.component(.year, from: nextMonth),
-                    month: calendar.component(.month, from: nextMonth),
-                    day: day
-                ))
-            }
-        } else {
-            trailingDates = []
+        let totalCount = leadingDates.count + currentDates.count
+        let trailingCount = max(42 - totalCount, 0)
+        let trailingDates = (1...trailingCount).compactMap { day in
+            calendar.date(from: DateComponents(
+                year: calendar.component(.year, from: nextMonth),
+                month: calendar.component(.month, from: nextMonth),
+                day: day
+            ))
         }
 
         return leadingDates + currentDates + trailingDates
     }
+
+
 
     var body: some View {
         VStack(spacing: 12) {
