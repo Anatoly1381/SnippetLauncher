@@ -281,42 +281,87 @@ struct ApartmentDetailView: View {
 }
 import SwiftUI
 
+
 struct FullScreenImageView: View {
     let images: [NSImage]
     @Binding var currentIndex: Int
     @Binding var isPresented: Bool
     
-    @State private var transitionDirection: TransitionDirection = .forward
-    
+    // Настройки анимации
     enum TransitionDirection {
         case forward
         case backward
     }
+    @State private var transitionDirection: TransitionDirection = .forward
+    
+    // Настройки масштабирования
+    @State private var currentScale: CGFloat = 1.0
+    @State private var lastScale: CGFloat = 1.0
+    @State private var currentOffset: CGSize = .zero
+    @State private var lastOffset: CGSize = .zero
     
     var body: some View {
         ZStack {
+            // Фон
             Color.black.ignoresSafeArea()
             
-            // Основной контейнер для фото
+            // Основное изображение с анимациями
             ZStack {
                 ForEach(images.indices, id: \.self) { index in
                     if index == currentIndex {
                         Image(nsImage: images[index])
                             .resizable()
                             .scaledToFit()
+                            .scaleEffect(currentScale)
+                            .offset(currentOffset)
                             .transition(getTransition())
-                            .zIndex(1) // Активное фото поверх остальных
+                            .zIndex(1)
+                            .gesture(
+                                MagnificationGesture()
+                                    .onChanged { value in
+                                        currentScale = lastScale * value
+                                    }
+                                    .onEnded { _ in
+                                        lastScale = currentScale
+                                        if currentScale < 1.0 {
+                                            resetImageState()
+                                        }
+                                    }
+                            )
+                            .simultaneousGesture(
+                                TapGesture(count: 2)
+                                    .onEnded {
+                                        withAnimation {
+                                            currentScale = currentScale > 1.0 ? 1.0 : 2.5
+                                            lastScale = currentScale
+                                        }
+                                    }
+                            )
+                            .simultaneousGesture(
+                                DragGesture()
+                                    .onChanged { value in
+                                        if currentScale > 1.0 {
+                                            currentOffset = CGSize(
+                                                width: lastOffset.width + value.translation.width,
+                                                height: lastOffset.height + value.translation.height
+                                            )
+                                        }
+                                    }
+                                    .onEnded { _ in
+                                        lastOffset = currentOffset
+                                    }
+                            )
                     } else {
                         Image(nsImage: images[index])
                             .resizable()
                             .scaledToFit()
-                            .hidden() // Скрываем неактивные фото
+                            .hidden()
                             .zIndex(0)
                     }
                 }
             }
             
-            // Кнопки навигации
+            // Кнопки навигации (вернул предыдущий стиль)
             HStack {
                 Button(action: goPrevious) {
                     Image(systemName: "chevron.left")
@@ -327,6 +372,7 @@ struct FullScreenImageView: View {
                 }
                 .buttonStyle(.plain)
                 .disabled(currentIndex <= 0)
+                .opacity(currentIndex <= 0 ? 0 : 1)
                 
                 Spacer()
                 
@@ -339,12 +385,60 @@ struct FullScreenImageView: View {
                 }
                 .buttonStyle(.plain)
                 .disabled(currentIndex >= images.count - 1)
+                .opacity(currentIndex >= images.count - 1 ? 0 : 1)
+            }
+            .padding(.horizontal, 20)
+            
+            // Верхняя панель управления
+            VStack {
+                HStack {
+                    Spacer()
+                    Button(action: { isPresented = false }) {
+                        Image(systemName: "xmark.circle.fill")
+                            .font(.title)
+                            .foregroundColor(.white)
+                            .padding(8)
+                    }
+                    .buttonStyle(.plain)
+                }
+                Spacer()
             }
             .padding()
+            
+            // Нижний индикатор
+            VStack {
+                Spacer()
+                HStack(spacing: 8) {
+                    ForEach(images.indices, id: \.self) { index in
+                        Capsule()
+                            .fill(index == currentIndex ? Color.white : Color.gray.opacity(0.5))
+                            .frame(width: index == currentIndex ? 20 : 8, height: 8)
+                            .onTapGesture {
+                                withAnimation {
+                                    currentIndex = index
+                                }
+                            }
+                    }
+                }
+                .padding(.bottom, 30)
+            }
         }
+        .gesture(
+            DragGesture()
+                .onEnded { value in
+                    if currentScale == 1.0 {
+                        if value.translation.width < -50 {
+                            goNext()
+                        } else if value.translation.width > 50 {
+                            goPrevious()
+                        }
+                    }
+                }
+        )
     }
     
     private func goPrevious() {
+        resetImageState()
         withAnimation(.easeInOut(duration: 0.5)) {
             transitionDirection = .backward
             currentIndex = max(0, currentIndex - 1)
@@ -352,9 +446,19 @@ struct FullScreenImageView: View {
     }
     
     private func goNext() {
+        resetImageState()
         withAnimation(.easeInOut(duration: 0.5)) {
             transitionDirection = .forward
             currentIndex = min(images.count - 1, currentIndex + 1)
+        }
+    }
+    
+    private func resetImageState() {
+        withAnimation {
+            currentScale = 1.0
+            lastScale = 1.0
+            currentOffset = .zero
+            lastOffset = .zero
         }
     }
     

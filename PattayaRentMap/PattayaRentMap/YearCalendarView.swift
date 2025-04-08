@@ -102,11 +102,62 @@ struct YearCalendarView: View {
     }
 }
 
+import SwiftUI
+
 struct MonthView: View {
     let month: Int
     let year: Int
     let bookedRanges: [BookingRange]
     let calendar: Calendar
+    
+    var body: some View {
+        VStack(spacing: 8) {
+            // Название месяца
+            Text(monthName)
+                .font(.system(size: 14, weight: .bold))
+                .padding(.top, 8)
+                .frame(maxWidth: .infinity)
+            
+            // Дни недели
+            HStack(spacing: 0) {
+                ForEach(weekdaySymbols, id: \.self) { day in
+                    Text(day)
+                        .font(.system(size: 11, weight: .semibold))
+                        .frame(width: 24, height: 20)
+                        .foregroundColor(.secondary)
+                }
+            }
+            
+            // Сетка дней
+            LazyVGrid(
+                columns: Array(repeating: GridItem(.fixed(24), spacing: 0), count: 7),
+                spacing: 4
+            ) {
+                ForEach(0..<daysInMonth.count, id: \.self) { index in
+                    let day = daysInMonth[index]
+                    if day == 0 {
+                        Text("")
+                            .frame(width: 24, height: 24)
+                    } else {
+                        DayCellView(
+                            day: day,
+                            month: month,
+                            year: year,
+                            bookedRanges: bookedRanges,
+                            calendar: calendar
+                        )
+                        .frame(width: 24, height: 24)
+                    }
+                }
+            }
+            .frame(width: 168) // 7 колонок × 24pt
+            .padding(.bottom, 8)
+        }
+        .frame(width: 200)
+        .background(Color(.windowBackgroundColor))
+        .cornerRadius(10)
+        .shadow(radius: 2)
+    }
     
     private var daysInMonth: [Int] {
         guard let date = calendar.date(from: DateComponents(year: year, month: month)),
@@ -114,74 +165,65 @@ struct MonthView: View {
             return []
         }
         
-        let firstWeekday = (calendar.component(.weekday, from: date) + 5) % 7
-        return Array(repeating: 0, count: firstWeekday) + Array(range)
+        let firstWeekday = calendar.component(.weekday, from: date)
+        let offset = (firstWeekday - calendar.firstWeekday + 7) % 7
+        return Array(repeating: 0, count: offset) + Array(range)
     }
+    
+    private var monthName: String {
+        let formatter = DateFormatter()
+        formatter.locale = Locale(identifier: "ru_RU")
+        formatter.dateFormat = "LLLL"
+        guard let date = dateForMonth() else { return "" }
+        return formatter.string(from: date).capitalized
+    }
+    
+    private var weekdaySymbols: [String] {
+        let formatter = DateFormatter()
+        formatter.locale = Locale(identifier: "ru_RU")
+        formatter.calendar = calendar
+        guard let symbols = formatter.shortStandaloneWeekdaySymbols else {
+            return ["П", "В", "С", "Ч", "П", "С", "В"]
+        }
+        
+        let startIndex = calendar.firstWeekday - 1
+        return Array(symbols[startIndex...] + symbols[..<startIndex])
+            .map { String($0.prefix(1)) }
+    }
+    
+    private func dateForMonth() -> Date? {
+        calendar.date(from: DateComponents(year: year, month: month))
+    }
+}
+
+struct DayCellView: View {
+    let day: Int
+    let month: Int
+    let year: Int
+    let bookedRanges: [BookingRange]
+    let calendar: Calendar
     
     var body: some View {
-        VStack(spacing: 10) {
-            Text(monthName)
-                .font(.headline)
-                .foregroundColor(.primary)
-            
-            HStack(spacing: 4) {
-                ForEach(weekdaySymbols, id: \.self) { symbol in
-                    Text(symbol)
-                        .font(.caption)
-                        .frame(width: 28)
-                        .foregroundColor(.secondary)
-                }
-            }
-            
-            LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 0), count: 7), spacing: 4) {
-                ForEach(daysInMonth, id: \.self) { day in
-                    if day == 0 {
-                        Color.clear
-                            .frame(height: 28)
-                    } else {
-                        dayView(for: day)
-                    }
-                }
-            }
-            .frame(minHeight: 160)
-        }
-        .padding(12)
-        .background(Color(nsColor: .windowBackgroundColor))
-        .cornerRadius(10)
-        .shadow(color: Color.black.opacity(0.1), radius: 3, x: 0, y: 2)
-        .frame(width: 200)
-    }
-    
-    private func dayView(for day: Int) -> some View {
-        // Проверяем валидность дня
-        guard day > 0 else {
-            return AnyView(EmptyView())
-        }
-        
-        // Создаем компоненты даты
-        let dateComponents = DateComponents(
-            year: year,
-            month: month,
-            day: day
-        )
-        
-        // Получаем дату
+        let dateComponents = DateComponents(year: year, month: month, day: day)
         guard let date = calendar.date(from: dateComponents) else {
             return AnyView(
                 Text("")
-                    .frame(width: 28, height: 28)
+                    .frame(width: 24, height: 24)
             )
         }
         
-        // Проверяем статус даты
-        let isBooked = isDateBooked(date)
+        let isBooked = bookedRanges.contains { range in
+            calendar.isDate(date, inSameDayAs: range.startDate) ||
+            calendar.isDate(date, inSameDayAs: range.endDate) ||
+            (range.startDate...range.endDate).contains(date)
+        }
+        
         let isToday = calendar.isDate(date, inSameDayAs: Date())
         
-        // Создаем представление
         return AnyView(
             Text("\(day)")
-                .font(.system(size: 12))
-                .frame(width: 28, height: 28)
+                .font(.system(size: 12, weight: .medium))
+                .frame(width: 24, height: 24)
                 .background(
                     Group {
                         if isToday {
@@ -192,39 +234,9 @@ struct MonthView: View {
                     }
                 )
                 .foregroundColor(isBooked ? .red : (isToday ? .blue : .primary))
-                .cornerRadius(14)
+                .cornerRadius(12)
         )
     }
     
-    // Единственная версия метода isDateBooked
-    private func isDateBooked(_ date: Date) -> Bool {
-        guard !bookedRanges.isEmpty else {
-            return false
-        }
-        
-        return bookedRanges.contains { range in
-            calendar.isDate(date, inSameDayAs: range.startDate) ||
-            calendar.isDate(date, inSameDayAs: range.endDate) ||
-            (range.startDate...range.endDate).contains(date)
-        }
-    }
     
-    // MARK: - Date Calculations
-    private var monthName: String {
-        let dateFormatter = DateFormatter()
-        dateFormatter.locale = Locale(identifier: "ru_RU")
-        dateFormatter.dateFormat = "LLLL"
-        guard let date = dateForMonth() else { return "" }
-        return dateFormatter.string(from: date)
-    }
-    
-    private var weekdaySymbols: [String] {
-        let formatter = DateFormatter()
-        formatter.locale = Locale(identifier: "ru_RU")
-        return formatter.veryShortWeekdaySymbols.map { String($0.prefix(1)) }
-    }
-    
-    private func dateForMonth() -> Date? {
-        calendar.date(from: DateComponents(year: year, month: month))
-    }
 }

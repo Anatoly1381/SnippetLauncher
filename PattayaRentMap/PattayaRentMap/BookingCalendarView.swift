@@ -6,6 +6,14 @@ struct BookingCalendarView: View {
     @Binding var checkInDate: Date
     @Binding var checkOutDate: Date
     
+    // Добавьте этот календарь с понедельником как первым днем
+    private var calendar: Calendar {
+        var calendar = Calendar(identifier: .gregorian)
+        calendar.firstWeekday = 2 // 2 = понедельник
+        calendar.locale = Locale(identifier: "ru_RU")
+        return calendar
+    }
+    
     var body: some View {
         HStack(alignment: .top, spacing: 20) {
             // Календарь заезда
@@ -20,14 +28,15 @@ struct BookingCalendarView: View {
                     displayedComponents: [.date]
                 )
                 .datePickerStyle(.graphical)
-                .environment(\.calendar, Calendar(identifier: .gregorian))
+                .environment(\.calendar, calendar) // Используем наш календарь
                 .environment(\.locale, Locale(identifier: "ru_RU"))
                 .frame(width: 300, height: 300)
                 .overlay(
                     HighlightOverlay(
                         startDate: checkInDate,
                         endDate: checkOutDate,
-                        isActive: true
+                        isActive: true,
+                        calendar: calendar // Передаем календарь
                     )
                 )
             }
@@ -44,14 +53,15 @@ struct BookingCalendarView: View {
                     displayedComponents: [.date]
                 )
                 .datePickerStyle(.graphical)
-                .environment(\.calendar, Calendar(identifier: .gregorian))
+                .environment(\.calendar, calendar) // Используем наш календарь
                 .environment(\.locale, Locale(identifier: "ru_RU"))
                 .frame(width: 300, height: 300)
                 .overlay(
                     HighlightOverlay(
                         startDate: checkInDate,
                         endDate: checkOutDate,
-                        isActive: true
+                        isActive: true,
+                        calendar: calendar // Передаем календарь
                     )
                 )
             }
@@ -64,21 +74,18 @@ struct HighlightOverlay: View {
     let startDate: Date
     let endDate: Date
     let isActive: Bool
+    let calendar: Calendar // Добавляем параметр календаря
     
     var body: some View {
         GeometryReader { geometry in
             if isActive && endDate > startDate {
-                let calendar = Calendar.current
                 let cellWidth = geometry.size.width / 7
                 let cellHeight = geometry.size.height / 6
                 
-                let start = calendar.startOfDay(for: startDate)
-                let end = calendar.startOfDay(for: endDate)
-                
                 Path { path in
-                    var current = start
-                    while current <= end {
-                        let weekday = (calendar.component(.weekday, from: current) + 5) % 7
+                    var current = startDate
+                    while current <= endDate {
+                        let weekday = (calendar.component(.weekday, from: current) + 5) % 7 // Корректировка для понедельника
                         let week = calendar.component(.weekOfMonth, from: current) - 1
                         
                         path.addRect(CGRect(

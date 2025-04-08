@@ -16,31 +16,45 @@ struct DateRangePickerView: View {
     @State private var currentMonth: Date = Date()
     
     var body: some View {
-        VStack {
+        VStack(spacing: 12) {
             monthNavigation
-                .padding(.bottom, 8)
             
-            LazyVGrid(columns: Array(repeating: GridItem(), count: 7)) {
-                // Печатаем дни недели
+            LazyVGrid(columns: Array(repeating: GridItem(), count: 7), spacing: 8) {
+                // Дни недели (начиная с понедельника)
                 ForEach(weekdaySymbols, id: \.self) { day in
                     Text(day)
-                        .font(.caption)
+                        .font(.system(size: 14, weight: .semibold))
                         .foregroundColor(.secondary)
+                        .frame(width: 36)
                 }
                 
-                // Печатаем дни месяца
+                // Дни месяца
                 ForEach(daysInMonth, id: \.self) { date in
-                    DayView(
-                        date: date,
-                        startDate: $startDate,
-                        endDate: $endDate,
-                        bookedRanges: bookedRanges,
-                        currentMonth: currentMonth,
-                        calendar: calendar
-                    )
+                    if calendar.isDate(date, equalTo: currentMonth, toGranularity: .month) {
+                        DayView(
+                            date: date,
+                            startDate: $startDate,
+                            endDate: $endDate,
+                            bookedRanges: bookedRanges,
+                            currentMonth: currentMonth,
+                            calendar: calendar
+                        )
+                    } else {
+                        // Для дней не из текущего месяца
+                        Text("\(calendar.component(.day, from: date))")
+                            .font(.system(size: 16))
+                            .frame(width: 36, height: 36)
+                            .foregroundColor(.secondary)
+                            .opacity(0.5)
+                    }
                 }
             }
+            .padding(.horizontal, 12)
         }
+        .padding(.vertical, 16)
+        .background(Color(.windowBackgroundColor))
+        .cornerRadius(12)
+        .shadow(color: Color.black.opacity(0.1), radius: 6, x: 0, y: 3)
         .onAppear {
             currentMonth = calendar.startOfDay(for: currentMonth)
         }
@@ -50,28 +64,36 @@ struct DateRangePickerView: View {
         HStack {
             Button(action: previousMonth) {
                 Image(systemName: "chevron.left")
-                    .padding(8)
+                    .font(.system(size: 18, weight: .bold))
+                    .padding(12)
                     .contentShape(Rectangle())
             }
             
             Text(currentMonthTitle)
-                .font(.headline)
+                .font(.system(size: 18, weight: .semibold))
                 .frame(maxWidth: .infinity)
             
             Button(action: nextMonth) {
                 Image(systemName: "chevron.right")
-                    .padding(8)
+                    .font(.system(size: 18, weight: .bold))
+                    .padding(12)
                     .contentShape(Rectangle())
             }
         }
         .buttonStyle(.plain)
+        .padding(.vertical, 8)
     }
     
     private var weekdaySymbols: [String] {
         let formatter = DateFormatter()
         formatter.locale = Locale(identifier: "ru_RU")
         formatter.calendar = calendar
-        return formatter.shortStandaloneWeekdaySymbols.map { $0.capitalized }
+        
+        let symbols = formatter.shortStandaloneWeekdaySymbols ?? []
+        let shift = (calendar.firstWeekday - 1 + 7) % 7
+        guard !symbols.isEmpty, shift < symbols.count else { return [] }
+        
+        return Array(symbols[shift...] + symbols[..<shift])
     }
     
     private var currentMonthTitle: String {
@@ -90,10 +112,11 @@ struct DateRangePickerView: View {
         var dates: [Date] = []
         var current = range.start
         
-        // Добавляем дни из предыдущего месяца
+        // Получаем первый день недели
         let firstWeekday = calendar.component(.weekday, from: current)
         let daysToAdd = (firstWeekday - calendar.firstWeekday + 7) % 7
         
+        // Добавляем дни из предыдущего месяца
         if daysToAdd > 0 {
             let prevMonth = calendar.date(byAdding: .month, value: -1, to: current)!
             let prevMonthDays = calendar.range(of: .day, in: .month, for: prevMonth)!.count
@@ -106,21 +129,10 @@ struct DateRangePickerView: View {
             }
         }
         
-        // Добавляем дни текущего месяца
+        // Добавляем только дни текущего месяца
         while current < range.end {
             dates.append(current)
             current = calendar.date(byAdding: .day, value: 1, to: current)!
-        }
-        
-        // Добавляем дни следующего месяца для заполнения сетки
-        let remaining = 42 - dates.count // 6 недель * 7 дней
-        if remaining > 0 {
-            let nextMonth = calendar.date(byAdding: .month, value: 1, to: current)!
-            for day in 1...remaining {
-                if let date = calendar.date(bySetting: .day, value: day, of: nextMonth) {
-                    dates.append(date)
-                }
-            }
         }
         
         return dates
@@ -151,13 +163,14 @@ struct DayView: View {
         let isEnd = isEndDate(date)
         
         Text("\(calendar.component(.day, from: date))")
-            .frame(width: 32, height: 32)
+            .font(.system(size: 16, weight: .medium))
+            .frame(width: 36, height: 36)
             .background(background(for: isSelected, isStart: isStart, isEnd: isEnd))
             .foregroundColor(foregroundColor(for: isCurrentMonth, isBooked: isBooked))
             .clipShape(Circle())
             .overlay(
                 Circle()
-                    .strokeBorder(isStart || isEnd ? Color.blue : Color.clear, lineWidth: 2)
+                    .strokeBorder(isStart || isEnd ? Color.blue : Color.clear, lineWidth: 2.5)
             )
             .onTapGesture {
                 selectDate(date)
@@ -187,10 +200,11 @@ struct DayView: View {
         ZStack {
             if isStart || isEnd {
                 Circle()
-                    .fill(Color.blue.opacity(0.3))
+                    .fill(Color.blue.opacity(0.4))
+                    .shadow(color: Color.blue.opacity(0.2), radius: 3, x: 0, y: 2)
             } else if isSelected {
                 Circle()
-                    .fill(Color.blue.opacity(0.1))
+                    .fill(Color.blue.opacity(0.2))
             }
         }
     }
