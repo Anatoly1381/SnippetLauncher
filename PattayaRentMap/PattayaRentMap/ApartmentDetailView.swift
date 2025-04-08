@@ -38,13 +38,11 @@ struct ApartmentDetailView: View {
             .padding()
         }
         .sheet(isPresented: $showYearCalendar) {
-            NavigationView {
-                YearCalendarView(
-                    bookedRanges: apartment.bookingRanges,
+            YearCalendarSheet(
+                bookedRanges: apartment.bookingRanges,
                     calendar: calendar
                 )
             }
-        }
         .fileImporter(
             isPresented: $showImagePicker,
             allowedContentTypes: [.image],
@@ -477,3 +475,6 @@ struct FullScreenImageView: View {
         }
     }
 }
+
+
+
