@@ -1,90 +1,86 @@
-// ContentView.swift
-
 import SwiftUI
 import MapKit
 
 struct ContentView: View {
-    @StateObject private var viewModel = ApartmentViewModel()
+    @StateObject private var apartmentVM = ApartmentViewModel()
+    @StateObject private var mapVM = MapViewModel()
+
     @State private var selectedApartment: Apartment?
     @State private var showStatistics = false
-    
-    var body: some View {
-        VStack {
-            HStack {
-                Toggle(isOn: $viewModel.showOnlyAvailable) {
-                    Text("Показать только доступные")
-                }
-                
-                Button(action: { showStatistics.toggle() }) {
-                    Image(systemName: "chart.bar")
-                        .foregroundColor(.white)
-                        .padding(8)
-                        .background(Color.blue)
-                        .cornerRadius(8)
-                }
-            }
-            .padding()
-            
-            if showStatistics {
-                VStack(alignment: .leading, spacing: 8) {
-                    Text("Статистика бронирований")
-                        .font(.headline)
-                    
-                    HStack {
-                        StatisticBadge(value: viewModel.bookingStatistics.total, label: "Всего", color: .gray)
-                        StatisticBadge(value: viewModel.bookingStatistics.reserved, label: "Забронировано", color: .red)
-                        StatisticBadge(value: viewModel.bookingStatistics.tentative, label: "Предварительно", color: .orange)
-                    }
-                }
-                .padding()
-                .background(Color.gray.opacity(0.1))
-                .cornerRadius(10)
-                .padding(.horizontal)
-                }
+    @State private var mapCameraPosition = MapCameraPosition.automatic
 
-                Map {
-                    ForEach(viewModel.filteredApartments) { apartment in
-                        Annotation(apartment.title, coordinate: apartment.coordinate) {
-                            Button {
-                                selectedApartment = apartment
-                            } label: {
-                                Image(systemName: "house.circle.fill")
-                                    .resizable()
-                                    .frame(width: 30, height: 30)
-                                    .foregroundColor(apartment.status == .available ? .green : .red)
+    var body: some View {
+        NavigationStack {
+            ZStack(alignment: .topTrailing) {
+                MapReader { proxy in
+                    // 🔴 Кнопка сброса пользовательских объектов
+                    Button("Удалить метки") {
+                        mapVM.resetUserObjects()
+                    }
+                    .padding(10)
+                    .background(Color.red)
+                    .foregroundColor(.white)
+                    .cornerRadius(8)
+                    .padding()
+
+                    Map(position: $mapCameraPosition) {
+                        apartmentAnnotations
+                        objectAnnotations
+                    }
+                    .mapStyle(.standard(elevation: .realistic))
+                    .mapControls {
+                        MapUserLocationButton()
+                        MapPitchToggle()
+                        MapScaleView()
+                    }
+                    .onTapGesture { location in
+                        if let coordinate = proxy.convert(location, from: .local) {
+                            mapVM.startCreatingObject(at: coordinate)
                         }
                     }
+                    .ignoresSafeArea()
                 }
             }
-            .mapControls {
-                MapUserLocationButton()
+            .sheet(item: $selectedApartment) { apartment in
+                ApartmentDetailView(apartment: apartment)
+                    .frame(minWidth: 900, idealWidth: 1000, maxWidth: .infinity, maxHeight: .infinity)
             }
-            .mapStyle(.standard(elevation: .realistic))
-        }
-        .sheet(item: $selectedApartment) { apartment in
-            ApartmentDetailView(apartment: apartment)
-                .frame(minWidth: 900, idealWidth: 1000, maxWidth: .infinity, maxHeight: .infinity)
+            .sheet(item: $mapVM.selectedObject) { object in
+                if let index = mapVM.objects.firstIndex(where: { $0.id == object.id }) {
+                    MapObjectDetailView(object: $mapVM.objects[index], viewModel: mapVM)
+                }
+            }
         }
     }
-}
 
-struct StatisticBadge: View {
-    let value: Int
-    let label: String
-    let color: Color
-    
-    var body: some View {
-        VStack {
-            Text("\(value)")
-                .font(.title3.bold())
-                .foregroundColor(color)
-            Text(label)
-                .font(.caption)
-                .foregroundColor(.secondary)
+    private var apartmentAnnotations: some MapContent {
+        ForEach(apartmentVM.filteredApartments) { apartment in
+            Annotation(apartment.title, coordinate: apartment.coordinate) {
+                Button {
+                    selectedApartment = apartment
+                } label: {
+                    Image(systemName: "house.circle.fill")
+                        .resizable()
+                        .frame(width: 30, height: 30)
+                        .foregroundColor(apartment.status == .available ? .green : .red)
+                }
+            }
         }
-        .padding(8)
-        .frame(maxWidth: .infinity)
-        .background(Color.gray.opacity(0.2))  // Замена systemGray5
-        .cornerRadius(8)
+    }
+
+    private var objectAnnotations: some MapContent {
+        ForEach(mapVM.objects) { object in
+            Annotation(object.title, coordinate: object.clCoordinate) {
+                Button {
+                    print("Tapped on object: \(object.title)")
+                    mapVM.selectedObject = object
+                } label: {
+                    Image(systemName: "mappin.circle.fill")
+                        .resizable()
+                        .frame(width: 28, height: 28)
+                        .foregroundColor(.blue)
+                }
+            }
+        }
     }
 }

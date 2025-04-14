@@ -1,17 +1,19 @@
 import SwiftUI
 import AppKit
 
+
 struct ApartmentDetailView: View {
     @ObservedObject var apartment: Apartment
     @State private var selectedStartDate: Date?
     @State private var selectedEndDate: Date?
-    @State private var bookingType: BookingType = .reserved
+    @State private var bookingType: BookingType = .confirmed
     @State private var showOverlapAlert = false
     @State private var isDescriptionExpanded = false
     @State private var showDeleteAllConfirmation = false
     @State private var showYearCalendar = false
     @State private var showImagePicker = false
     @State private var photoToDelete: Int?
+    @EnvironmentObject var apartmentVM: ApartmentViewModel
     
     // Для полноэкранного просмотра
     @State private var isFullImageViewPresented = false
@@ -71,7 +73,21 @@ struct ApartmentDetailView: View {
             )
         }
     }
+    private func formattedDate(_ date: Date) -> String {
+        let formatter = DateFormatter()
+        formatter.dateStyle = .medium
+        formatter.locale = Locale(identifier: "ru_RU")
+        return formatter.string(from: date)
+    }
 
+    private func color(for type: BookingType) -> Color {
+        switch type {
+        case .confirmed:
+            return .red
+        case .tentative:
+            return .orange
+        }
+    }
     private var photosSection: some View {
         VStack(alignment: .leading) {
             Text("Фотографии")
@@ -196,7 +212,7 @@ struct ApartmentDetailView: View {
             .frame(height: 400)
 
             Picker("Тип бронирования", selection: $bookingType) {
-                ForEach(BookingType.allCases) { type in
+                ForEach(BookingType.allCases, id: \.self) { type in
                     Text(type.rawValue).tag(type)
                 }
             }
@@ -212,44 +228,52 @@ struct ApartmentDetailView: View {
     }
 
     private var existingBookingsSection: some View {
-        Group {
-            if !apartment.bookingRanges.isEmpty {
-                Divider()
-
-                HStack {
-                    Text("Текущие бронирования")
-                        .font(.headline)
-
-                    Spacer()
-
-                    Button(action: {
-                        showDeleteAllConfirmation = true
-                    }) {
-                        Text("Удалить все")
-                            .font(.caption)
-                            .foregroundColor(.red)
-                    }
-                }
-
-                ForEach(apartment.bookingRanges) { range in
+        let ranges = apartment.bookingRanges
+        return Group {
+            if !ranges.isEmpty {
+                VStack(spacing: 8) {
+                    Divider()
+                    
                     HStack {
-                        VStack(alignment: .leading, spacing: 4) {
-                            Text("\(range.startDate.formatted(date: .long, time: .omitted)) - \(range.endDate.formatted(date: .long, time: .omitted))")
-                            Text("Тип: \(range.type.rawValue)")
-                                .foregroundColor(range.type == .reserved ? .red : .orange)
-                        }
-
+                        Text("Текущие бронирования")
+                            .font(.headline)
+                        
                         Spacer()
-
+                        
                         Button(action: {
-                            apartment.removeBooking(range)
+                            showDeleteAllConfirmation = true
                         }) {
-                            Image(systemName: "trash")
+                            Text("Удалить все")
+                                .font(.caption)
                                 .foregroundColor(.red)
                         }
-                        .buttonStyle(.borderless)
                     }
-                    .padding(.vertical, 4)
+                    .padding(.horizontal)
+                    
+                    ForEach(ranges, id: \.id) { range in
+                        HStack(alignment: .center) {
+                            VStack(alignment: .leading, spacing: 4) {
+                                Text("\(formattedDate(range.startDate)) – \(formattedDate(range.endDate))")
+                                    .font(.subheadline)
+
+                                Text("Тип: \(range.type.rawValue)")
+                                    .font(.caption)
+                                    .foregroundColor(color(for: range.type))
+                            }
+
+                            Spacer()
+
+                            Button(action: {
+                                apartment.removeBooking(range)
+                                
+                            }) {
+                                Image(systemName: "trash")
+                                    .foregroundColor(.red)
+                            }
+                            .buttonStyle(.plain)
+                        }
+                        .padding(.vertical, 4)
+                    }
                 }
             }
         }
@@ -272,6 +296,8 @@ struct ApartmentDetailView: View {
             showOverlapAlert = true
         } else {
             apartment.addBooking(from: start, to: end, type: bookingType)
+            
+            apartment.updateStatus() // ← Добавь эту строку
             selectedStartDate = nil
             selectedEndDate = nil
         }
@@ -475,6 +501,3 @@ struct FullScreenImageView: View {
         }
     }
 }
-
-
-

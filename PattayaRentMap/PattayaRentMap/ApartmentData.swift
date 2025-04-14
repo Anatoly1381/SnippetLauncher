@@ -2,6 +2,10 @@ import Foundation
 import CoreLocation
 import PhotosUI
 
+class ApartmentData: ObservableObject {
+    @Published var apartments: [Apartment] = mockApartments
+    }
+
 let mockApartments: [Apartment] = [
     Apartment(
         id: "apt001",

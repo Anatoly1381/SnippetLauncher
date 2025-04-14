@@ -1,12 +1,9 @@
 import SwiftUI
 import Foundation
 import CoreLocation
+import Combine
 
-enum BookingType: String, CaseIterable, Identifiable, Codable {
-    var id: String { self.rawValue }
-    case reserved = "Забронировано"
-    case tentative = "Предварительно"
-}
+
 
 enum ApartmentStatus: String {
     case available = "Свободна"
@@ -18,6 +15,7 @@ struct BookingRange: Identifiable, Codable, Hashable {
     var startDate: Date
     var endDate: Date
     var type: BookingType
+    
 
     func overlaps(with other: BookingRange) -> Bool {
         return (startDate...endDate).overlaps(other.startDate...other.endDate)
@@ -25,6 +23,7 @@ struct BookingRange: Identifiable, Codable, Hashable {
 }
 
 class Apartment: Identifiable, ObservableObject {
+    let objectWillChange = ObservableObjectPublisher()
     let id: String
     let title: String
     let description: String
@@ -75,8 +74,9 @@ class Apartment: Identifiable, ObservableObject {
     }
 
     // Обновление статуса квартиры в зависимости от текущих бронирований
-    private func updateStatus() {
-        status = bookingRanges.contains { $0.type == .reserved } ? .rented : .available
+    func updateStatus() {
+        status = bookingRanges.contains { $0.type == .confirmed } ? .rented : .available
+        objectWillChange.send() // <-- это ключ к автоматическому обновлению иконки
     }
 
     // Сохранение информации о бронированиях
@@ -106,18 +106,21 @@ class Apartment: Identifiable, ObservableObject {
     func addBooking(from startDate: Date, to endDate: Date, type: BookingType) {
         let newBooking = BookingRange(startDate: startDate, endDate: endDate, type: type)
         bookingRanges.append(newBooking)
+        updateStatus()
         save()  // Сохраняем изменения
     }
 
     // Удаление бронирования по объекту
     func removeBooking(_ booking: BookingRange) {
         bookingRanges.removeAll { $0.id == booking.id }
-        save()  // Сохраняем изменения
+        updateStatus() // <— добавляем обновление статуса
+        save()
     }
 
     // Удаление всех бронирований
     func removeAllBookings() {
         bookingRanges.removeAll()
+        updateStatus()
         save()  // Сохраняем изменения
     }
 }

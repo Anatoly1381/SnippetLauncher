@@ -51,7 +51,7 @@ struct YearCalendarView: View {
                     .padding(12)
             }
 
-            Text("\(currentYear)")
+            Text(String(currentYear))
                 .font(.system(size: 24, weight: .bold))
                 .frame(maxWidth: .infinity)
                 .padding(.vertical, 8)
@@ -256,8 +256,8 @@ struct DayCellView: View {
             )
             .cornerRadius(12)
     }
-    
 }
+
 import SwiftUI
 
 struct YearCalendarSheet: View {
@@ -286,7 +286,6 @@ struct YearCalendarSheet: View {
         }
         .background(Color(.windowBackgroundColor))
     }
+
 }
-
-
 
