@@ -22,8 +22,8 @@ struct MapObjectCreatorView: View {
                         let newObject = MapObject(
                             title: title,
                             description: description,
-                            coordinate: MapObject.Coordinate(latitude: coordinate.latitude, longitude: coordinate.longitude),
-                            photoURLs: [] // временно, пока не подключим загрузку URL’ов
+                            coordinate: MapObject.Coordinate(latitude: coordinate.latitude, longitude: coordinate.longitude)
+                            
                         )
                         viewModel.objects.append(newObject)
                         viewModel.selectedObject = newObject

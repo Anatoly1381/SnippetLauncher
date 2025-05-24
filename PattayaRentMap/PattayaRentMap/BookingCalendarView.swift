@@ -2,7 +2,7 @@
 import SwiftUI
 
 struct BookingCalendarView: View {
-    var apartment: Apartment
+    
     @Binding var checkInDate: Date
     @Binding var checkOutDate: Date
     

@@ -1,0 +1,8 @@
+/* 
+  Localizable.strings
+  SnippetLauncher
+
+  Created by Anatoly Fedorov on 18/05/2025.
+  
+*/"window_title" = "Менеджер шаблонов";
+"button_create" = "Создать";

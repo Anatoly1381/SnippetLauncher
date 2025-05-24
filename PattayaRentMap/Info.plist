@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!--
+   Info.plist
+   PattayaRentMap
+
+   Created by Anatoly Fedorov on 25/04/2025.
+   Copyright (c) 2025 ___ORGANIZATIONNAME___. All rights reserved.
+-->
+<plist version="1.0">
+<dict>
+    <key>CFBundleName</key>
+    <string>PattayaRentMap</string>
+
+    <key>CFBundleShortVersionString</key>
+    <string>1.0.0-beta</string>
+
+    <key>NSHumanReadableCopyright</key>
+    <string>Приложение для аренды с картой, календарём и крутым интерфейсом 😎</string>
+
+    <key>NSPrincipalClass</key>
+    <string>NSApplication</string>
+</dict>
+</plist>

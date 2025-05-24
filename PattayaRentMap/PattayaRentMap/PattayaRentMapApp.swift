@@ -15,3 +15,14 @@ struct PattayaRentMapApp: App {
         }
     }
 }
+class PhotoViewerState: ObservableObject {
+    @Published var isPresented: Bool = false
+    @Published var images: [NSImage] = []
+    @Published var currentIndex: Int = 0
+    
+    func show(images: [NSImage], startingAt index: Int = 0) {
+        self.images = images
+        self.currentIndex = index
+        self.isPresented = true
+    }
+}
