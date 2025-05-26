@@ -1,8 +1,21 @@
-/* 
-  Localizable.strings
-  SnippetLauncher
+/* Localizable.strings — Russian translations for SnippetLauncher */
 
-  Created by Anatoly Fedorov on 18/05/2025.
-  
-*/"window_title" = "Менеджер шаблонов";
-"button_create" = "Создать";
+"window_title"                 = "Менеджер шаблонов";
+"button_create"                = "Создать";
+"help_create"                  = "Создать новый шаблон";
+"button_edit"                  = "Изменить";
+"help_edit"                    = "Редактировать выбранный шаблон";
+"button_delete"                = "Удалить";
+"help_delete"                  = "Удалить выбранный шаблон";
+"empty_state"                  = "Ничего не найдено";
+"search_placeholder"           = "Поиск…";
+
+/* Snippet editor modal */
+"editor_title_placeholder"     = "Заголовок";
+"editor_tags_placeholder"      = "Теги (через запятую)";
+"button_cancel"                = "Отмена";
+"button_save"                  = "Сохранить";
+
+/* Context menu items */
+"menu_edit"                    = "Редактировать";
+"menu_delete"                  = "Удалить";

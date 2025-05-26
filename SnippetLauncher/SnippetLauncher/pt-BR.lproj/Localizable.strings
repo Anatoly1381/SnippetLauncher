@@ -1,8 +1,22 @@
-/* 
-  Localizable.strings
-  SnippetLauncher
+/* Localizable.strings — Brazilian Portuguese translations for SnippetLauncher */
 
-  Created by Anatoly Fedorov on 18/05/2025.
-  
-*/"window_title" = "Менеджер шаблонов";
-"button_create" = "Создать";
+/* General UI */
+"window_title"                 = "Gerenciador de trechos";
+"button_create"                = "Criar";
+"help_create"                  = "Criar um novo trecho";
+"button_edit"                  = "Editar";
+"help_edit"                    = "Editar o trecho selecionado";
+"button_delete"                = "Excluir";
+"help_delete"                  = "Excluir o trecho selecionado";
+"empty_state"                  = "Nada encontrado";
+"search_placeholder"           = "Pesquisar…";
+
+/* Snippet editor modal */
+"editor_title_placeholder"     = "Título";
+"editor_tags_placeholder"      = "Tags (separadas por vírgula)";
+"button_cancel"                = "Cancelar";
+"button_save"                  = "Salvar";
+
+/* Context menu items */
+"menu_edit"                    = "Editar";
+"menu_delete"                  = "Excluir";

@@ -26,7 +26,13 @@ class SnippetViewModel: ObservableObject {
 
     func addSnippet(_ snippet: SnippetModel) {
         guard !snippets.contains(where: { $0.id == snippet.id }) else { return }
-        snippets.append(snippet)
+        let lowerTitle = snippet.title.lowercased()
+        // Ищем первую позицию, где существующий заголовок больше по алфавиту
+        if let idx = snippets.firstIndex(where: { $0.title.lowercased() > lowerTitle }) {
+            snippets.insert(snippet, at: idx)
+        } else {
+            snippets.append(snippet)
+        }
     }
 
     func updateSnippet(_ updated: SnippetModel) {
@@ -38,6 +44,7 @@ class SnippetViewModel: ObservableObject {
     func deleteSnippet(_ snippet: SnippetModel) {
         snippets.removeAll { $0.id == snippet.id }
         selectedSnippets.remove(snippet.id)
+        objectWillChange.send() // Принудительно уведомляем об изменениях
     }
 
     func deleteSelectedSnippets() {
@@ -45,8 +52,8 @@ class SnippetViewModel: ObservableObject {
         selectedSnippets.removeAll()
     }
 
-     func save() {
-        print("💾 Сохраняем шаблоны: \(snippets.map { $0.title })")
+    private func save() {
+        print("✅ save() called — snippets:", snippets.map { $0.title })
         do {
             let data = try JSONEncoder().encode(snippets)
             try data.write(to: saveURL)
@@ -56,6 +63,7 @@ class SnippetViewModel: ObservableObject {
     }
     
     private func load() {
+        print("🔄 load() called")
         guard FileManager.default.fileExists(atPath: saveURL.path) else { return }
         do {
             let data = try Data(contentsOf: saveURL)

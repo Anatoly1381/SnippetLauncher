@@ -12,10 +12,12 @@ import Combine
 @main
 struct SnippetLauncherApp: App {
     @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
+    @StateObject var viewModel = SnippetViewModel.shared
 
     var body: some Scene {
+        // The Settings scene automatically gets a "Settings…" menu entry
         Settings {
-            EmptyView()
+            SettingsView()
         }
     }
 }

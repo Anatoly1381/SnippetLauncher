@@ -1,8 +1,28 @@
-/* 
+/*
   Localizable.strings
   SnippetLauncher
 
   Created by Anatoly Fedorov on 18/05/2025.
-  
-*/"window_title" = "Менеджер шаблонов";
-"button_create" = "Создать";
+*/
+
+/* Localizable.strings — French translations for SnippetLauncher */
+
+"window_title"                 = "Gestionnaire de modèles";
+"button_create"                = "Créer";
+"help_create"                  = "Créer un nouveau modèle";
+"button_edit"                  = "Modifier";
+"help_edit"                    = "Modifier le modèle sélectionné";
+"button_delete"                = "Supprimer";
+"help_delete"                  = "Supprimer le modèle sélectionné";
+"empty_state"                  = "Rien trouvé";
+"search_placeholder"           = "Recherche…";
+
+/* Snippet editor modal */
+"editor_title_placeholder"     = "Titre";
+"editor_tags_placeholder"      = "Étiquettes (séparées par des virgules)";
+"button_cancel"                = "Annuler";
+"button_save"                  = "Enregistrer";
+
+/* Context menu items */
+"menu_edit"                    = "Modifier";
+"menu_delete"                  = "Supprimer";

@@ -26,7 +26,7 @@ struct WrappedTextView: NSViewRepresentable {
         textView.delegate = context.coordinator
         textView.isEditable = isEditable
         textView.isSelectable = true
-        textView.font = NSFont.systemFont(ofSize: NSFont.systemFontSize)
+        textView.font = NSFont.systemFont(ofSize: 14)
         textView.textColor = .textColor
         textView.backgroundColor = .textBackgroundColor
         textView.isHorizontallyResizable = false
