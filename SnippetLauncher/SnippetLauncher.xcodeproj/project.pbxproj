@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		EE97105A2DE4CA6200C66822 /* HotKey in Frameworks */ = {isa = PBXBuildFile; productRef = EE9710592DE4CA6200C66822 /* HotKey */; };
+		EE97108B2DE4D04800C66822 /* HotKey in Frameworks */ = {isa = PBXBuildFile; productRef = EE97108A2DE4D04800C66822 /* HotKey */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -27,7 +27,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				EE97105A2DE4CA6200C66822 /* HotKey in Frameworks */,
+				EE97108B2DE4D04800C66822 /* HotKey in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -70,7 +70,7 @@
 			);
 			name = SnippetLauncher;
 			packageProductDependencies = (
-				EE9710592DE4CA6200C66822 /* HotKey */,
+				EE97108A2DE4D04800C66822 /* HotKey */,
 			);
 			productName = SnippetLauncher;
 			productReference = EE2118132DCBA7DE00F0B45E /* SnippetLauncher.app */;
@@ -110,7 +110,7 @@
 			mainGroup = EE21180A2DCBA7DE00F0B45E;
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
-				EE9710582DE4CA6200C66822 /* XCRemoteSwiftPackageReference "HotKey" */,
+				EE9710892DE4D04800C66822 /* XCRemoteSwiftPackageReference "HotKey" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = EE2118142DCBA7DE00F0B45E /* Products */;
@@ -351,7 +351,7 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		EE9710582DE4CA6200C66822 /* XCRemoteSwiftPackageReference "HotKey" */ = {
+		EE9710892DE4D04800C66822 /* XCRemoteSwiftPackageReference "HotKey" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/soffes/HotKey";
 			requirement = {
@@ -362,9 +362,9 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		EE9710592DE4CA6200C66822 /* HotKey */ = {
+		EE97108A2DE4D04800C66822 /* HotKey */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = EE9710582DE4CA6200C66822 /* XCRemoteSwiftPackageReference "HotKey" */;
+			package = EE9710892DE4D04800C66822 /* XCRemoteSwiftPackageReference "HotKey" */;
 			productName = HotKey;
 		};
 /* End XCSwiftPackageProductDependency section */
