@@ -1,0 +1,21 @@
+/* Localizable.strings — English translations for SnippetLauncher */
+
+"window_title"                 = "Snippet Manager";
+"button_create"                = "Create";
+"help_create"                  = "Create a new snippet";
+"button_edit"                  = "Edit";
+"help_edit"                    = "Edit selected snippet";
+"button_delete"                = "Delete";
+"help_delete"                  = "Delete selected snippet";
+"empty_state"                  = "Nothing found";
+"search_placeholder"           = "Search…";
+
+/* Snippet editor modal */
+"editor_title_placeholder"     = "Title";
+"editor_tags_placeholder"      = "Tags (comma separated)";
+"button_cancel"                = "Cancel";
+"button_save"                  = "Save";
+
+/* Context menu items */
+"menu_edit"                    = "Edit";
+"menu_delete"                  = "Delete";

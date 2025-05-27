@@ -1,0 +1,22 @@
+/* Localizable.strings — Thai translations for SnippetLauncher */
+
+/* General UI */
+"window_title"                 = "ตัวจัดการสแนปเล็ต";
+"button_create"                = "สร้าง";
+"help_create"                  = "สร้างสแนปเล็ตใหม่";
+"button_edit"                  = "แก้ไข";
+"help_edit"                    = "แก้ไขสแนปเล็ตที่เลือก";
+"button_delete"                = "ลบ";
+"help_delete"                  = "ลบสแนปเล็ตที่เลือก";
+"empty_state"                  = "ไม่พบรายการ";
+"search_placeholder"           = "ค้นหา…";
+
+/* Snippet editor modal */
+"editor_title_placeholder"     = "หัวเรื่อง";
+"editor_tags_placeholder"      = "แท็ก (คั่นด้วยเครื่องหมายจุลภาค)";
+"button_cancel"                = "ยกเลิก";
+"button_save"                  = "บันทึก";
+
+/* Context menu items */
+"menu_edit"                    = "แก้ไข";
+"menu_delete"                  = "ลบ";

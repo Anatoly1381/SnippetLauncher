@@ -1,0 +1,22 @@
+/* Localizable.strings — Simplified Chinese translations for SnippetLauncher */
+
+/* General UI */
+"window_title"                 = "片段管理器";
+"button_create"                = "创建";
+"help_create"                  = "创建新的片段";
+"button_edit"                  = "编辑";
+"help_edit"                    = "编辑所选片段";
+"button_delete"                = "删除";
+"help_delete"                  = "删除所选片段";
+"empty_state"                  = "未找到内容";
+"search_placeholder"           = "搜索…";
+
+/* Snippet editor modal */
+"editor_title_placeholder"     = "标题";
+"editor_tags_placeholder"      = "标签（用逗号分隔）";
+"button_cancel"                = "取消";
+"button_save"                  = "保存";
+
+/* Context menu items */
+"menu_edit"                    = "编辑";
+"menu_delete"                  = "删除";
