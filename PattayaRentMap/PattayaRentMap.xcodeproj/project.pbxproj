@@ -248,9 +248,6 @@
 			);
 			name = PattayaRentMap;
 			packageProductDependencies = (
-				EECDEF012D96D5E300694623 /* ElegantCalendar */,
-				EECDEF042D96DD8F00694623 /* ElegantCalendar */,
-				EECDEF542D96E79400694623 /* ElegantCalendar */,
 			);
 			productName = PattayaRentMap;
 			productReference = EEF96A952D94062C00D08186 /* PattayaRentMap.app */;
@@ -686,6 +683,7 @@
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"PattayaRentMap/Preview Content\"";
+				DEVELOPMENT_TEAM = "";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
@@ -711,6 +709,7 @@
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"PattayaRentMap/Preview Content\"";
+				DEVELOPMENT_TEAM = "";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
@@ -848,21 +847,6 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
-
-/* Begin XCSwiftPackageProductDependency section */
-		EECDEF012D96D5E300694623 /* ElegantCalendar */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = ElegantCalendar;
-		};
-		EECDEF042D96DD8F00694623 /* ElegantCalendar */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = ElegantCalendar;
-		};
-		EECDEF542D96E79400694623 /* ElegantCalendar */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = ElegantCalendar;
-		};
-/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = EEF96A8D2D94062C00D08186 /* Project object */;
 }
